@@ -1,15 +1,15 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
-from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
-def register(request):
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
+def register_view(request):   # <-- function name
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Account created successfully!")
-            return redirect("home")
-  # redirect after signup
+            user = form.save()
+            login(request, user)
+            return redirect('home')  # change 'home' to your home page
     else:
-        form = RegisterForm()
-    return render(request, "accounts/register.html", {"form": form})
+        form = UserCreationForm()
+    return render(request, 'accounts/register.html', {'form': form})
